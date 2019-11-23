@@ -1,0 +1,35 @@
+{
+  "name": "@yingyeothon/repository",
+  "version": "0.2.0",
+  "description": "An abstraction layer of repository and document.",
+  "keywords": [
+    "db"
+  ],
+  "author": "jaeyoung.choi <lactrious@gmail.com>",
+  "homepage": "https://toolkit.yyt.life/nodejs/packages/repository",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yingyeothon/nodejs-toolkit.git"
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "build": "../../node_modules/.bin/tsc",
+    "test": "../../node_modules/.bin/jest --runInBand --detectOpenHandles"
+  },
+  "bugs": {
+    "url": "https://github.com/yingyeothon/nodejs-toolkit/issues"
+  }
+}
