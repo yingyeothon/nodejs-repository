@@ -21,7 +21,7 @@
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
     "lint": "tslint **/*.ts -t verbose",
-    "prepublishOnly": "lerna run tsc && npm run test",
+    "build": "lerna run tsc && npm run test",
     "deploy": "lerna publish"
   }
 }
