@@ -19,7 +19,7 @@ export class S3Repository extends SimpleRepository {
     super();
     this.bucketName = bucketName;
     this.s3 = s3 || new S3();
-    this.prefix = prefix;
+    this.prefix = prefix || "";
     this.codec = codec || new JsonCodec();
   }
 
@@ -31,9 +31,12 @@ export class S3Repository extends SimpleRepository {
           Key: this.asS3Key(key)
         })
         .promise();
-
+      if (!content || !content.Body) {
+        return undefined;
+      }
       return this.codec.decode<T>(content.Body.toString("utf-8"));
     } catch (error) {
+      // If you want to give this error message, please add the `listObject` permission to your AWS Credential.
       if (!/The specified key does not exist./.test(error.message)) {
         throw error;
       }

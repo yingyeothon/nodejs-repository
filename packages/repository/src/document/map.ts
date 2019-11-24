@@ -11,8 +11,15 @@ export class MapDocument<V = string> {
     private readonly tupleKey: string
   ) {}
 
-  public async insertOrUpdate(key: string, value: V) {
-    return this.edit(values => ({ ...values, [key]: value }));
+  public async insertOrUpdate(key: string, value: V | undefined) {
+    return this.edit(values => {
+      if (!value) {
+        const copied = { ...values };
+        delete copied[key];
+        return copied;
+      }
+      return { ...values, [key]: value };
+    });
   }
 
   public async delete(key: string) {
@@ -45,7 +52,7 @@ export class MapDocument<V = string> {
   }
 
   private ensureDocument(
-    doc: IVersioned<IKeyValues<V>>
+    doc: IVersioned<IKeyValues<V>> | undefined
   ): IVersioned<IKeyValues<V>> {
     const version = doc && doc.version ? doc.version : 0;
     const content = doc && doc.content ? doc.content : {};

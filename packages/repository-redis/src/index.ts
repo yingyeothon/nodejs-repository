@@ -25,12 +25,16 @@ export class RedisRepository extends SimpleRepository
     super();
     this.redis = redis || new IORedis();
     this.codec = codec || new JsonCodec();
-    this.prefix = prefix;
+    this.prefix = prefix || "";
   }
 
   public async get<T>(key: string) {
     try {
-      return this.codec.decode<T>(await this.redis.get(this.asRedisKey(key)));
+      const value = await this.redis.get(this.asRedisKey(key));
+      if (!value) {
+        return undefined;
+      }
+      return this.codec.decode<T>(value);
     } catch (error) {
       console.error(error);
       return undefined;

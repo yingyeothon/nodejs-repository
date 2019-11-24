@@ -12,10 +12,10 @@ export class InMemoryRepository extends SimpleRepository
   public async get<T>(key: string) {
     const doc = this.store[key];
     if (!doc) {
-      return null;
+      return undefined;
     }
-    if (doc.expired > 0 && doc.expired < Date.now()) {
-      return null;
+    if (doc.expired && doc.expired > 0 && doc.expired < Date.now()) {
+      return undefined;
     }
     return doc.value as T;
   }

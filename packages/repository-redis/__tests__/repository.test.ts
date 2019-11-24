@@ -13,7 +13,7 @@ testRedis("get-set", async repo => {
   };
 
   const maybeNull = await repo.get<ISession>(key);
-  expect(maybeNull).toBeNull();
+  expect(maybeNull).toBeUndefined();
 
   await repo.set(key, value);
   const maybeSession = await repo.get<ISession>(key);
@@ -21,7 +21,7 @@ testRedis("get-set", async repo => {
 
   await repo.delete(key);
   const deleted = await repo.get<ISession>(key);
-  expect(deleted).toBeNull();
+  expect(deleted).toBeUndefined();
 });
 
 const sleep = (millis: number) =>
@@ -35,7 +35,7 @@ testRedis("set-with-expire", async repo => {
   };
 
   const maybeNull = await repo.get<ISession>(key);
-  expect(maybeNull).toBeNull();
+  expect(maybeNull).toBeUndefined();
 
   const ttl = 50;
   await repo.setWithExpire(key, value, ttl);
@@ -44,5 +44,5 @@ testRedis("set-with-expire", async repo => {
 
   await sleep(ttl + 1);
   const maybeExpired = await repo.get<ISession>(key);
-  expect(maybeExpired).toBeNull();
+  expect(maybeExpired).toBeUndefined();
 });

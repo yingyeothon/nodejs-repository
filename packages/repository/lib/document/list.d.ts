@@ -14,7 +14,7 @@ export declare class ListDocument<V = string> {
         version: number;
     }>;
     truncate(): Promise<void>;
-    read(): Promise<IVersioned<V[]>>;
+    read(): Promise<IVersioned<IValues<V>>>;
     edit(modifier: (input: V[]) => V[]): Promise<{
         content: V[];
         version: number;

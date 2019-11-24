@@ -6,7 +6,7 @@
     "s3"
   ],
   "author": "jaeyoung.choi <lactrious@gmail.com>",
-  "homepage": "https://toolkit.yyt.life/nodejs/packages/repository-s3",
+  "homepage": "https://github.com/yingyeothon/nodejs-repository/tree/master/packages/repository-s3",
   "license": "MIT",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

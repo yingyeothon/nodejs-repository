@@ -42,7 +42,9 @@ export class ListDocument<V = string> {
     return selector((await this.read()).content);
   }
 
-  private ensureDocument(doc: IVersioned<IValues<V>>): IVersioned<IValues<V>> {
+  private ensureDocument(
+    doc: IVersioned<IValues<V>> | undefined
+  ): IVersioned<IValues<V>> {
     const version = doc && doc.version ? doc.version : 0;
     const content = doc && doc.content ? doc.content : [];
     return { version, content };

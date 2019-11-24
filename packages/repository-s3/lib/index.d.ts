@@ -13,7 +13,7 @@ export declare class S3Repository extends SimpleRepository {
     private readonly prefix;
     private readonly codec;
     constructor({ bucketName, s3, prefix, codec }: IS3RepositoryArguments);
-    get<T>(key: string): Promise<T>;
+    get<T>(key: string): Promise<T | undefined>;
     set<T>(key: string, value: T): Promise<void>;
     delete(key: string): Promise<void>;
     withPrefix(prefix: string): S3Repository;

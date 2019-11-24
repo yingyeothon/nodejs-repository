@@ -11,7 +11,7 @@ test("get-after-set", async () => {
 test("get-null-if-absent", async () => {
   const mem: IRepository = new InMemoryRepository();
   const key = "hello";
-  expect(await mem.get(key)).toBeNull();
+  expect(await mem.get(key)).toBeUndefined();
 });
 
 test("get-null-if-deleted", async () => {
@@ -22,7 +22,7 @@ test("get-null-if-deleted", async () => {
   expect(await mem.get(key)).toEqual(expected);
 
   await mem.delete(key);
-  expect(await mem.get(key)).toBeNull();
+  expect(await mem.get(key)).toBeUndefined();
 });
 
 const sleep = (millis: number) =>
@@ -37,5 +37,5 @@ test("get-null-after-expired", async () => {
   expect(await mem.get(key)).toEqual(expected);
 
   await sleep(ttl * 2);
-  expect(await mem.get(key)).toBeNull();
+  expect(await mem.get(key)).toBeUndefined();
 });

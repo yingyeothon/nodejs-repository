@@ -7,7 +7,7 @@ export declare class MapDocument<V = string> {
     private readonly repository;
     private readonly tupleKey;
     constructor(repository: IRepository, tupleKey: string);
-    insertOrUpdate(key: string, value: V): Promise<{
+    insertOrUpdate(key: string, value: V | undefined): Promise<{
         content: IKeyValues<V>;
         version: number;
     }>;
