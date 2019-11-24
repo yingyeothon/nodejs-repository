@@ -1,6 +1,6 @@
 {
   "name": "@yingyeothon/repository-redis",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A repository implementation using Redis",
   "keywords": [
     "redis"
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@yingyeothon/codec": "^0.2.0",
-    "@yingyeothon/repository": "^0.2.0",
+    "@yingyeothon/repository": "^0.2.1",
     "ioredis": "^4.11.1"
   },
   "devDependencies": {
