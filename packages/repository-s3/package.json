@@ -33,7 +33,7 @@
     "url": "https://github.com/yingyeothon/nodejs-toolkit/issues"
   },
   "optionalDependencies": {
-    "aws-sdk": "2.437.0"
+    "aws-sdk": "2.1415.0"
   },
   "dependencies": {
     "@yingyeothon/codec": "^0.2.0",
