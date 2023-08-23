@@ -22,22 +22,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yingyeothon/nodejs-toolkit.git"
+    "url": "git+https://github.com/yingyeothon/nodejs-repository.git"
   },
   "scripts": {
-    "tsc": "tsc",
-    "build": "../../node_modules/.bin/tsc",
-    "test": "../../node_modules/.bin/jest --runInBand --detectOpenHandles"
+    "build": "tsc",
+    "test": "jest --runInBand --detectOpenHandles"
   },
   "bugs": {
-    "url": "https://github.com/yingyeothon/nodejs-toolkit/issues"
+    "url": "https://github.com/yingyeothon/nodejs-repository/issues"
   },
   "dependencies": {
-    "@yingyeothon/codec": "^0.2.0",
-    "@yingyeothon/repository": "^0.2.1",
-    "ioredis": "^4.11.1"
-  },
-  "devDependencies": {
-    "@types/ioredis": "^4.0.13"
+    "@yingyeothon/codec": "^0.4.0",
+    "@yingyeothon/naive-redis": "^0.4.0",
+    "@yingyeothon/repository": "*"
   }
 }
