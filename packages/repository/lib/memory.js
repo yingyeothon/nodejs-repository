@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InMemoryRepository = void 0;
 const repository_1 = require("./repository");
 class InMemoryRepository extends repository_1.SimpleRepository {
     constructor() {
@@ -30,7 +31,7 @@ class InMemoryRepository extends repository_1.SimpleRepository {
     set(key, value) {
         return __awaiter(this, void 0, void 0, function* () {
             this.store[key] = {
-                value
+                value,
             };
         });
     }
@@ -43,7 +44,7 @@ class InMemoryRepository extends repository_1.SimpleRepository {
         return __awaiter(this, void 0, void 0, function* () {
             this.store[key] = {
                 expired: expiresInMillis > 0 ? Date.now() + expiresInMillis : 0,
-                value
+                value,
             };
         });
     }

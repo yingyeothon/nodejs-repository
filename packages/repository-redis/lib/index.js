@@ -9,20 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RedisRepository = void 0;
 const codec_1 = require("@yingyeothon/codec");
 const repository_1 = require("@yingyeothon/repository");
-const IORedis = require("ioredis");
+const del_1 = require("@yingyeothon/naive-redis/lib/del");
+const get_1 = require("@yingyeothon/naive-redis/lib/get");
+const set_1 = require("@yingyeothon/naive-redis/lib/set");
 class RedisRepository extends repository_1.SimpleRepository {
-    constructor({ redis, prefix, codec } = {}) {
+    constructor({ redisConnection, prefix, codec }) {
         super();
-        this.redis = redis || new IORedis();
+        this.redisConnection = redisConnection;
         this.codec = codec || new codec_1.JsonCodec();
         this.prefix = prefix || "";
     }
     get(key) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const value = yield this.redis.get(this.asRedisKey(key));
+                const value = yield (0, get_1.default)(this.redisConnection, this.asRedisKey(key));
                 if (!value) {
                     return undefined;
                 }
@@ -39,7 +42,7 @@ class RedisRepository extends repository_1.SimpleRepository {
             if (value === undefined) {
                 return this.delete(key);
             }
-            yield this.redis.set(this.asRedisKey(key), this.codec.encode(value));
+            yield (0, set_1.default)(this.redisConnection, this.asRedisKey(key), this.codec.encode(value));
         });
     }
     setWithExpire(key, value, expiresInMillis) {
@@ -50,25 +53,21 @@ class RedisRepository extends repository_1.SimpleRepository {
             if (expiresInMillis <= 0) {
                 throw new Error('"expiresInMillis" should be greater than 0.');
             }
-            else if (expiresInMillis % 1000 === 0) {
-                yield this.redis.setex(this.asRedisKey(key), Math.floor(expiresInMillis / 1000), this.codec.encode(value));
-            }
-            else {
-                yield this.redis.set(this.asRedisKey(key), this.codec.encode(value));
-                yield this.redis.pexpire(this.asRedisKey(key), expiresInMillis);
-            }
+            yield (0, set_1.default)(this.redisConnection, this.asRedisKey(key), this.codec.encode(value), {
+                expirationMillis: expiresInMillis,
+            });
         });
     }
     delete(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.redis.del(this.asRedisKey(key));
+            yield (0, del_1.default)(this.redisConnection, this.asRedisKey(key));
         });
     }
     withPrefix(prefix) {
         return new RedisRepository({
-            redis: this.redis,
+            redisConnection: this.redisConnection,
             prefix,
-            codec: this.codec
+            codec: this.codec,
         });
     }
     asRedisKey(key) {

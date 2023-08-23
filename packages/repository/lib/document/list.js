@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ListDocument = void 0;
 class ListDocument {
     constructor(repository, tupleKey) {
         this.repository = repository;
@@ -16,12 +17,12 @@ class ListDocument {
     }
     insert(value) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.edit(values => [...values, value]);
+            return this.edit((values) => [...values, value]);
         });
     }
     deleteIf(filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.edit(values => values.filter(value => !filter(value)));
+            return this.edit((values) => values.filter((value) => !filter(value)));
         });
     }
     truncate() {
@@ -40,7 +41,7 @@ class ListDocument {
             const doc = yield this.read();
             const newDoc = {
                 content: modifier(doc.content),
-                version: doc.version + 1
+                version: doc.version + 1,
             };
             yield this.repository.set(this.tupleKey, newDoc);
             return newDoc;

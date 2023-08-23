@@ -1,10 +1,10 @@
-import { IRepository } from "..";
-import { IVersioned } from "./versioned";
-export declare type IValues<V> = V[];
+import { Repository } from "..";
+import { Versioned } from "./versioned";
+export type Values<V> = V[];
 export declare class ListDocument<V = string> {
     private readonly repository;
     private readonly tupleKey;
-    constructor(repository: IRepository, tupleKey: string);
+    constructor(repository: Repository, tupleKey: string);
     insert(value: V): Promise<{
         content: V[];
         version: number;
@@ -14,7 +14,7 @@ export declare class ListDocument<V = string> {
         version: number;
     }>;
     truncate(): Promise<void>;
-    read(): Promise<IVersioned<IValues<V>>>;
+    read(): Promise<Versioned<Values<V>>>;
     edit(modifier: (input: V[]) => V[]): Promise<{
         content: V[];
         version: number;

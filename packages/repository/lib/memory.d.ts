@@ -1,5 +1,5 @@
-import { IExpirableRepository, SimpleRepository } from "./repository";
-export declare class InMemoryRepository extends SimpleRepository implements IExpirableRepository {
+import { ExpirableRepository, SimpleRepository } from "./repository";
+export declare class InMemoryRepository extends SimpleRepository implements ExpirableRepository {
     private readonly store;
     get<T>(key: string): Promise<T | undefined>;
     set<T>(key: string, value: T): Promise<void>;
