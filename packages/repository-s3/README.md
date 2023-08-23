@@ -7,7 +7,7 @@ An implementation of `IRepository` interface using AWS S3.
 ```typescript
 import { S3Repository } from "@yingyeothon/repository-s3";
 
-interface IUser {
+interface User {
   name: string;
   hp: number;
   x: number;
@@ -16,11 +16,11 @@ interface IUser {
 
 const s3 = new S3Repository({
   bucketName: process.env.BUCKET_NAME,
-  prefix: "__users__/"
+  prefix: "__users__/",
 });
 
 const moveUser = async (userId: string, dx: number, dy: number) => {
-  const user = await s3.get<IUser>(userId);
+  const user = await s3.get<User>(userId);
   user.x += dx;
   user.y += dy;
   await s3.set(userId, user);
@@ -30,7 +30,7 @@ const moveUser = async (userId: string, dx: number, dy: number) => {
 It also supports `ListDocument` and `MapDocument`, too.
 
 ```typescript
-interface IServer {
+interface Server {
   ipAddress: string;
   hostName: string;
   lastAlive: number;
@@ -38,17 +38,17 @@ interface IServer {
 
 const s3 = new S3Repository({
   bucketName: process.env.BUCKET_NAME,
-  prefix: "__meta__/"
+  prefix: "__meta__/",
 });
-const servers = s3.getMapDocument<IServer>("servers");
+const servers = s3.getMapDocument<Server>("servers");
 
-const addServer = async (ipAddress: string, server: IServer) => {
+const addServer = async (ipAddress: string, server: Server) => {
   await servers.insertOrUpdate(ipADdress, server);
 };
 
-const listServers = async (): { [ipAddress: string]: IServer } => {
+const listServers = async (): { [ipAddress: string]: Server } => {
   /*
-   * interface IVersioned<T> {
+   * interface Versioned<T> {
    *   content: T;
    *   version: number;
    * }

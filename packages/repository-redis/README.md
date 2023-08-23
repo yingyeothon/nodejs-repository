@@ -7,27 +7,29 @@ An implementation of `IRepository` interface using Redis.
 This is a simple example that manages a login session with Redis.
 
 ```typescript
-import * as IORedis from "ioredis";
+import redisConnect from "@yingyeothon/naive-redis/lib/connect";
 import { RedisRepository } from "@yingyeothon/repository-redis";
 
-interface ISession {
+interface Session {
   id: string;
   expiredAt: number;
 }
 
 const redis = new RedisRepository({
-  redis: new IORedis(redisPort, redisHost, {
-    password: redisPassword
+  redisConnection: redisConnect({
+    host: redisHost,
+    post: redisPort,
+    password: redisPassword,
   }),
-  prefix: "session:"
+  prefix: "session:",
 });
 
 const login = async (id: string, pw: string) => {
   // Check if the credential is correct.
   const expiredAt = Date.now() + 30 * 60 * 1000;
-  const session: ISession = {
+  const session: Session = {
     id,
-    expiredAt
+    expiredAt,
   };
   const sessionId = hash(session, salt);
   await redis.set(sessionId, session);
@@ -38,7 +40,7 @@ const login = async (id: string, pw: string) => {
 };
 
 const authorize = async (sessionId: string) => {
-  const session = await redis.get<ISession>(sessionId);
+  const session = await redis.get<Session>(sessionId);
   return session && session.expiredAt >= Date.now();
 };
 ```

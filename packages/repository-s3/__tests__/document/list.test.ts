@@ -1,6 +1,6 @@
 import { S3Repository } from "../..";
 
-interface IKeyValue {
+interface KeyValue {
   key: string;
   value: string;
 }
@@ -12,11 +12,11 @@ test("list-doc", async () => {
   }
   const s3 = new S3Repository({
     bucketName: process.env.TEST_BUCKET,
-    prefix: "__test__/"
+    prefix: "__test__/",
   });
 
   await s3.delete("list-doc");
-  const listDoc = s3.getListDocument<IKeyValue>("list-doc");
+  const listDoc = s3.getListDocument<KeyValue>("list-doc");
 
   const first = { key: "hello", value: "world" };
   const second = { key: "hi", value: "world" };
@@ -41,7 +41,7 @@ test("list-doc", async () => {
   expect(three.version).toEqual(3);
   expect(three.content).toEqual([first, second, third]);
 
-  await listDoc.deleteIf(each => each.value === "world");
+  await listDoc.deleteIf((each) => each.value === "world");
   const oneAgain = await listDoc.read();
   expect(oneAgain.version).toEqual(4);
   expect(oneAgain.content).toEqual([third]);

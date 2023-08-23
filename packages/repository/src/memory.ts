@@ -1,13 +1,15 @@
-import { IExpirableRepository, SimpleRepository } from "./repository";
+import { ExpirableRepository, SimpleRepository } from "./repository";
 
-interface IExpirableDocument {
+interface ExpirableDocument {
   expired?: number;
   value: any;
 }
 
-export class InMemoryRepository extends SimpleRepository
-  implements IExpirableRepository {
-  private readonly store: { [key: string]: IExpirableDocument } = {};
+export class InMemoryRepository
+  extends SimpleRepository
+  implements ExpirableRepository
+{
+  private readonly store: { [key: string]: ExpirableDocument } = {};
 
   public async get<T>(key: string) {
     const doc = this.store[key];
@@ -22,7 +24,7 @@ export class InMemoryRepository extends SimpleRepository
 
   public async set<T>(key: string, value: T) {
     this.store[key] = {
-      value
+      value,
     };
   }
 
@@ -37,7 +39,7 @@ export class InMemoryRepository extends SimpleRepository
   ) {
     this.store[key] = {
       expired: expiresInMillis > 0 ? Date.now() + expiresInMillis : 0,
-      value
+      value,
     };
   }
 }

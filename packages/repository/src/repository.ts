@@ -1,12 +1,12 @@
 import { ListDocument, MapDocument } from "./document";
 
-export interface IRepository {
+export interface Repository {
   get<T>(key: string): Promise<T | undefined>;
   set<T>(key: string, value: T): Promise<void>;
   delete(key: string): Promise<void>;
 }
 
-export interface IExpirableRepository extends IRepository {
+export interface ExpirableRepository extends Repository {
   setWithExpire<T>(
     key: string,
     value: T,

@@ -1,36 +1,35 @@
-import { ICodec, JsonCodec } from "@yingyeothon/codec";
-import {
-  IExpirableRepository,
-  SimpleRepository
-} from "@yingyeothon/repository";
-import * as IORedis from "ioredis";
+import { Codec, JsonCodec } from "@yingyeothon/codec";
+import { ExpirableRepository, SimpleRepository } from "@yingyeothon/repository";
 
-interface IRedisRepositoryArguments {
-  redis: IORedis.Redis;
-  prefix: string;
-  codec: ICodec<string>;
+import { RedisConnection } from "@yingyeothon/naive-redis/lib/connection";
+import redisDel from "@yingyeothon/naive-redis/lib/del";
+import redisGet from "@yingyeothon/naive-redis/lib/get";
+import redisSet from "@yingyeothon/naive-redis/lib/set";
+
+interface RedisRepositoryArguments {
+  redisConnection: RedisConnection;
+  prefix?: string;
+  codec?: Codec<string>;
 }
 
-export class RedisRepository extends SimpleRepository
-  implements IExpirableRepository {
-  private readonly redis: IORedis.Redis;
+export class RedisRepository
+  extends SimpleRepository
+  implements ExpirableRepository
+{
+  private readonly redisConnection: RedisConnection;
   private readonly prefix: string;
-  private readonly codec: ICodec<string>;
+  private readonly codec: Codec<string>;
 
-  constructor({
-    redis,
-    prefix,
-    codec
-  }: Partial<IRedisRepositoryArguments> = {}) {
+  constructor({ redisConnection, prefix, codec }: RedisRepositoryArguments) {
     super();
-    this.redis = redis || new IORedis();
+    this.redisConnection = redisConnection;
     this.codec = codec || new JsonCodec();
     this.prefix = prefix || "";
   }
 
   public async get<T>(key: string) {
     try {
-      const value = await this.redis.get(this.asRedisKey(key));
+      const value = await redisGet(this.redisConnection, this.asRedisKey(key));
       if (!value) {
         return undefined;
       }
@@ -45,7 +44,11 @@ export class RedisRepository extends SimpleRepository
     if (value === undefined) {
       return this.delete(key);
     }
-    await this.redis.set(this.asRedisKey(key), this.codec.encode(value));
+    await redisSet(
+      this.redisConnection,
+      this.asRedisKey(key),
+      this.codec.encode(value)
+    );
   }
 
   public async setWithExpire<T>(
@@ -58,27 +61,26 @@ export class RedisRepository extends SimpleRepository
     }
     if (expiresInMillis <= 0) {
       throw new Error('"expiresInMillis" should be greater than 0.');
-    } else if (expiresInMillis % 1000 === 0) {
-      await this.redis.setex(
-        this.asRedisKey(key),
-        Math.floor(expiresInMillis / 1000),
-        this.codec.encode(value)
-      );
-    } else {
-      await this.redis.set(this.asRedisKey(key), this.codec.encode(value));
-      await this.redis.pexpire(this.asRedisKey(key), expiresInMillis);
     }
+    await redisSet(
+      this.redisConnection,
+      this.asRedisKey(key),
+      this.codec.encode(value),
+      {
+        expirationMillis: expiresInMillis,
+      }
+    );
   }
 
   public async delete(key: string) {
-    await this.redis.del(this.asRedisKey(key));
+    await redisDel(this.redisConnection, this.asRedisKey(key));
   }
 
   public withPrefix(prefix: string) {
     return new RedisRepository({
-      redis: this.redis,
+      redisConnection: this.redisConnection,
       prefix,
-      codec: this.codec
+      codec: this.codec,
     });
   }
 

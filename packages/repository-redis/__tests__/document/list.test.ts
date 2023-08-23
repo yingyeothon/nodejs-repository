@@ -1,13 +1,13 @@
 import { testRedis } from "..";
 
-interface IKeyValue {
+interface KeyValue {
   key: string;
   value: string;
 }
 
-testRedis("list-doc", async repo => {
+testRedis("list-doc", async (repo) => {
   await repo.delete("list-doc");
-  const listDoc = repo.getListDocument<IKeyValue>("list-doc");
+  const listDoc = repo.getListDocument<KeyValue>("list-doc");
 
   const first = { key: "hello", value: "world" };
   const second = { key: "hi", value: "world" };
@@ -32,7 +32,7 @@ testRedis("list-doc", async repo => {
   expect(three.version).toEqual(3);
   expect(three.content).toEqual([first, second, third]);
 
-  await listDoc.deleteIf(each => each.value === "world");
+  await listDoc.deleteIf((each) => each.value === "world");
   const oneAgain = await listDoc.read();
   expect(oneAgain.version).toEqual(4);
   expect(oneAgain.content).toEqual([third]);

@@ -1,18 +1,18 @@
-import { IRepository } from "..";
-import { IVersioned } from "./versioned";
+import { Repository } from "..";
+import { Versioned } from "./versioned";
 
-interface IKeyValues<V> {
+interface KeyValues<V> {
   [key: string]: V;
 }
 
 export class MapDocument<V = string> {
   constructor(
-    private readonly repository: IRepository,
+    private readonly repository: Repository,
     private readonly tupleKey: string
   ) {}
 
   public async insertOrUpdate(key: string, value: V | undefined) {
-    return this.edit(values => {
+    return this.edit((values) => {
       if (!value) {
         const copied = { ...values };
         delete copied[key];
@@ -31,29 +31,29 @@ export class MapDocument<V = string> {
   }
 
   public async read() {
-    const actual = await this.repository.get<IVersioned<IKeyValues<V>>>(
+    const actual = await this.repository.get<Versioned<KeyValues<V>>>(
       this.tupleKey
     );
     return this.ensureDocument(actual);
   }
 
-  public async edit(modifier: (input: IKeyValues<V>) => IKeyValues<V>) {
+  public async edit(modifier: (input: KeyValues<V>) => KeyValues<V>) {
     const doc = await this.read();
     const newDoc = {
       content: modifier(doc.content),
-      version: doc.version + 1
+      version: doc.version + 1,
     };
     await this.repository.set(this.tupleKey, newDoc);
     return newDoc;
   }
 
-  public async view<U>(selector: (input: IKeyValues<V>) => U) {
+  public async view<U>(selector: (input: KeyValues<V>) => U) {
     return selector((await this.read()).content);
   }
 
   private ensureDocument(
-    doc: IVersioned<IKeyValues<V>> | undefined
-  ): IVersioned<IKeyValues<V>> {
+    doc: Versioned<KeyValues<V>> | undefined
+  ): Versioned<KeyValues<V>> {
     const version = doc && doc.version ? doc.version : 0;
     const content = doc && doc.content ? doc.content : {};
     return { version, content };

@@ -1,20 +1,20 @@
-import { IRepository } from "..";
-import { IVersioned } from "./versioned";
+import { Repository } from "..";
+import { Versioned } from "./versioned";
 
-export type IValues<V> = V[];
+export type Values<V> = V[];
 
 export class ListDocument<V = string> {
   constructor(
-    private readonly repository: IRepository,
+    private readonly repository: Repository,
     private readonly tupleKey: string
   ) {}
 
   public async insert(value: V) {
-    return this.edit(values => [...values, value]);
+    return this.edit((values) => [...values, value]);
   }
 
   public async deleteIf(filter: (input: V) => boolean) {
-    return this.edit(values => values.filter(value => !filter(value)));
+    return this.edit((values) => values.filter((value) => !filter(value)));
   }
 
   public async truncate() {
@@ -22,7 +22,7 @@ export class ListDocument<V = string> {
   }
 
   public async read() {
-    const actual = await this.repository.get<IVersioned<IValues<V>>>(
+    const actual = await this.repository.get<Versioned<Values<V>>>(
       this.tupleKey
     );
     return this.ensureDocument(actual);
@@ -32,7 +32,7 @@ export class ListDocument<V = string> {
     const doc = await this.read();
     const newDoc = {
       content: modifier(doc.content),
-      version: doc.version + 1
+      version: doc.version + 1,
     };
     await this.repository.set(this.tupleKey, newDoc);
     return newDoc;
@@ -43,8 +43,8 @@ export class ListDocument<V = string> {
   }
 
   private ensureDocument(
-    doc: IVersioned<IValues<V>> | undefined
-  ): IVersioned<IValues<V>> {
+    doc: Versioned<Values<V>> | undefined
+  ): Versioned<Values<V>> {
     const version = doc && doc.version ? doc.version : 0;
     const content = doc && doc.content ? doc.content : [];
     return { version, content };

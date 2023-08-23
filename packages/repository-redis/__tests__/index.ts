@@ -1,22 +1,25 @@
-import * as IORedis from "ioredis";
+import redisConnect, {
+  RedisConnection,
+} from "@yingyeothon/naive-redis/lib/connection";
+
 import { RedisRepository } from "..";
 
 const isRedisNotSupported = () =>
   !process.env.TEST_REDIS_PORT || !process.env.TEST_REDIS_HOST;
 
-const redisWork = async (cb: (redis: IORedis.Redis) => Promise<any>) => {
+const redisWork = async (cb: (redis: RedisConnection) => Promise<any>) => {
   if (isRedisNotSupported()) {
     console.log(`No test env: TEST_REDIS_PORT, TEST_REDIS_HOST`);
     return;
   }
-  const redis = new IORedis(
-    +process.env.TEST_REDIS_PORT!,
-    process.env.TEST_REDIS_HOST!
-  );
+  const connection = redisConnect({
+    host: process.env.TEST_REDIS_HOST!,
+    port: +process.env.TEST_REDIS_PORT!,
+  });
   try {
-    await cb(redis);
+    await cb(connection);
   } finally {
-    redis.disconnect();
+    connection.socket.disconnect();
   }
 };
 
@@ -30,6 +33,8 @@ export const testRedis = (
     return;
   }
   test(name, async () => {
-    await redisWork(redis => cb(new RedisRepository({ redis })));
+    await redisWork((redisConnection) =>
+      cb(new RedisRepository({ redisConnection }))
+    );
   });
 };

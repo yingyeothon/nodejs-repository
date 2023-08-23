@@ -1,4 +1,4 @@
-export interface IVersioned<T> {
+export interface Versioned<T> {
   version: number;
   content: T;
 }
