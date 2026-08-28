@@ -1,3 +1,17 @@
+> ## ⚠️ DEPRECATED — moved to [yingyeothon/tslib](https://github.com/yingyeothon/tslib)
+>
+> This repository is archived and no longer maintained. Its packages now live in the
+> `tslib` monorepo and are published from there as **v2.0.0+** with a redesigned API
+> (see each package's README there for migration notes).
+>
+> | Package here (last release from this repo) | Successor in `tslib` |
+> | --- | --- |
+> | `@yingyeothon/repository` | `@yingyeothon/repository` |
+> | `@yingyeothon/repository-redis` | `@yingyeothon/repository-redis` |
+> | `@yingyeothon/repository-s3` | `@yingyeothon/repository-s3` |
+>
+> Versions published from this repository stay on npm but are marked deprecated.
+
 # NodeJS Repository abstractions for Yingyeothon
 
 A bundle of simple repository libraries for [yingyeothon](https://yyt.life)'s infrastructure.
